@@ -1,8 +1,3 @@
-"""
-Data Explorer — Adaptive Analytics Dashboard (v2)
-Run with: streamlit run data_explorer.py
-Requires: pip install streamlit pandas openpyxl plotly scipy scikit-learn
-"""
 
 import streamlit as st
 import pandas as pd
@@ -30,53 +25,279 @@ st.set_page_config(page_title="Data Explorer", page_icon="✦", layout="wide")
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
-html,body,[class*="css"]{font-family:'DM Sans',sans-serif;}
-.stApp{background:#f0ede8;}
-.block-container{padding-top:1.2rem!important;}
-.banner{background:#1a1a2e;padding:18px 28px;border-radius:14px;margin-bottom:18px;display:flex;align-items:center;gap:16px;}
-.banner h1{margin:0;font-size:21px;color:#fff;font-weight:600;}
-.banner p{margin:3px 0 0;font-size:13px;color:#8888aa;}
-.banner .badge{background:rgba(201,168,76,0.18);color:#c9a84c;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid rgba(201,168,76,0.35);margin-left:auto;}
-.kpi-card{background:#fff;border-radius:12px;padding:16px 20px;border:1px solid #e5e0d8;position:relative;overflow:hidden;}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,#c9a84c,#8b5e2a);}
-.kpi-label{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.1em;font-weight:500;}
-.kpi-value{font-size:26px;font-weight:600;color:#1a1a2e;margin:4px 0 2px;line-height:1;}
-.kpi-delta{font-size:12px;color:#666;}
-.insight{background:#fff;border-radius:10px;padding:12px 16px 12px 20px;border:1px solid #e5e0d8;border-left:4px solid #c9a84c;font-size:13px;color:#333;line-height:1.55;margin-bottom:8px;}
-.insight .tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:1px 6px;border-radius:3px;margin-right:6px;}
-.tag-warn{background:#fef3cd;color:#856404;}.tag-info{background:#d1ecf1;color:#0c5460;}.tag-good{background:#d4edda;color:#155724;}.tag-bad{background:#f8d7da;color:#721c24;}
-.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:#999;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.section-title::after{content:'';flex:1;height:1px;background:#e5e0d8;}
-.col-pill{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #e5e0d8;border-radius:20px;padding:3px 10px;font-size:12px;color:#444;margin:2px;}
-.col-pill .dot{width:8px;height:8px;border-radius:50%;}
-.dot-num{background:#c9a84c;}.dot-cat{background:#4a6fa5;}.dot-date{background:#5a8a6a;}
-.stat-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0ede8;font-size:13px;}
-.stat-row span:first-child{color:#888;}.stat-row span:last-child{font-weight:500;color:#1a1a2e;}
-.compute-card{background:#fff;border-radius:12px;padding:16px 18px;border:1px solid #e5e0d8;margin-bottom:10px;}
-.seg-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;}
-[data-testid="stSidebar"]{background:#1a1a2e!important;}
-[data-testid="stSidebar"] *{color:#e8e4dc!important;}
-[data-testid="stSidebar"] h2,[data-testid="stSidebar"] h3{color:#c9a84c!important;}
-[data-testid="stSidebar"] .stMarkdown p{color:#aaa!important;font-size:12px!important;}
-section[data-testid="stSidebar"] .stButton>button{background:rgba(201,168,76,0.15)!important;color:#c9a84c!important;border:1px solid rgba(201,168,76,0.3)!important;width:100%;border-radius:8px!important;font-size:12px!important;margin-bottom:2px;}
-.stTabs [data-baseweb="tab-list"]{gap:0;background:#e5e0d8;border-radius:10px;padding:3px;}
-.stTabs [data-baseweb="tab"]{border-radius:8px!important;font-size:12px!important;font-weight:500!important;padding:6px 14px!important;color:#666!important;}
-.stTabs [aria-selected="true"]{background:#1a1a2e!important;color:#c9a84c!important;}
-div[data-testid="stDataFrame"]{border-radius:10px;overflow:hidden;}
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+/* ── CSS variables — light mode ── */
+:root {
+  --bg-page:        #f0f2f8;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #fafbff;
+  --bg-input:       #ffffff;
+  --bg-sidebar:     linear-gradient(180deg,#1e1b4b 0%,#1e2050 100%);
+  --bg-tab-track:   #e4e7f0;
+
+  --text-primary:   #1e1b4b;
+  --text-secondary: #64748b;
+  --text-muted:     #94a3b8;
+  --text-sidebar:   rgba(255,255,255,0.75);
+
+  --border:         #e2e8f0;
+  --border-subtle:  #f1f5f9;
+
+  --accent:         #4f46e5;
+  --accent-light:   #eef2ff;
+  --accent-mid:     #818cf8;
+
+  --shadow-sm:      0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:      0 4px 16px rgba(0,0,0,0.08);
+  --shadow-accent:  0 4px 16px rgba(79,70,229,0.14);
+
+  --chart-bg:       #ffffff;
+  --chart-grid:     #f1f5f9;
+  --chart-axis:     #e2e8f0;
+  --chart-text:     #94a3b8;
+  --chart-title:    #1e293b;
+}
+
+/* ── CSS variables — dark mode ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-page:        #0e1117;
+    --bg-card:        #1a1d2e;
+    --bg-card-hover:  #1e2235;
+    --bg-input:       #1a1d2e;
+    --bg-tab-track:   #161927;
+
+    --text-primary:   #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted:     #475569;
+
+    --border:         rgba(255,255,255,0.08);
+    --border-subtle:  rgba(255,255,255,0.04);
+
+    --accent-light:   rgba(79,70,229,0.18);
+
+    --shadow-sm:      0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md:      0 4px 16px rgba(0,0,0,0.4);
+    --shadow-accent:  0 4px 16px rgba(79,70,229,0.25);
+
+    --chart-bg:       #1a1d2e;
+    --chart-grid:     rgba(255,255,255,0.05);
+    --chart-axis:     rgba(255,255,255,0.08);
+    --chart-text:     #475569;
+    --chart-title:    #e2e8f0;
+  }
+}
+
+/* ── Streamlit dark theme override (Streamlit sets its own dark bg) ── */
+[data-testid="stAppViewContainer"] > .main {
+  background: var(--bg-page);
+}
+
+html, body, [class*="css"] {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.stApp { background: var(--bg-page); }
+.block-container { padding-top: 1.2rem !important; }
+
+/* ── Banner ── */
+.banner {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%);
+  padding: 20px 28px; border-radius: 18px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 16px;
+  box-shadow: 0 8px 32px rgba(67,56,202,0.3);
+}
+.banner h1 { margin:0; font-size:18px; color:#fff; font-weight:700; letter-spacing:-0.3px; }
+.banner p  { margin:3px 0 0; font-size:12px; color:rgba(255,255,255,0.5); }
+.banner .badge {
+  background: rgba(255,255,255,0.15); color:#fff;
+  font-size:11px; font-weight:600; padding:5px 14px; border-radius:20px;
+  margin-left:auto; border:1px solid rgba(255,255,255,0.2);
+}
+
+/* ── KPI cards ── */
+.kpi-card {
+  background: var(--bg-card); border-radius:16px; padding:20px 22px;
+  box-shadow: var(--shadow-sm); border:1px solid var(--border);
+  position:relative; overflow:hidden; transition:box-shadow .2s, border-color .2s;
+}
+.kpi-card:hover { box-shadow: var(--shadow-accent); border-color:rgba(79,70,229,0.2); }
+.kpi-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background: linear-gradient(90deg,#4f46e5,#818cf8,#c4b5fd);
+}
+.kpi-label { font-size:11px; color:var(--text-muted); text-transform:uppercase;
+  letter-spacing:0.1em; font-weight:600; margin-bottom:6px; }
+.kpi-value { font-size:26px; font-weight:700; color:var(--text-primary); line-height:1; }
+.kpi-delta { font-size:12px; color:var(--text-muted); margin-top:4px; }
+
+/* ── Insight cards ── */
+.insight {
+  background: var(--bg-card); border-radius:12px; padding:14px 18px;
+  box-shadow: var(--shadow-sm); border-left:4px solid var(--accent);
+  border-top:1px solid var(--border); border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:8px;
+}
+.insight .tag { display:inline-block; font-size:10px; font-weight:700;
+  text-transform:uppercase; letter-spacing:0.08em; padding:2px 8px;
+  border-radius:6px; margin-right:8px; }
+.tag-warn { background:#fef3c7; color:#92400e; }
+.tag-info { background:#dbeafe; color:#1e40af; }
+.tag-good { background:#d1fae5; color:#065f46; }
+.tag-bad  { background:#fee2e2; color:#991b1b; }
+
+/* ── Section title ── */
+.section-title {
+  font-size:10px; font-weight:700; text-transform:uppercase;
+  letter-spacing:0.14em; color:var(--text-muted); margin-bottom:12px;
+  display:flex; align-items:center; gap:10px;
+}
+.section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── Stat row ── */
+.stat-row { display:flex; justify-content:space-between; padding:7px 0;
+  border-bottom:1px solid var(--border-subtle); font-size:13px; }
+.stat-row span:first-child { color:var(--text-muted); font-weight:500; }
+.stat-row span:last-child  { font-weight:600; color:var(--text-primary); }
+
+/* ── Pills ── */
+.col-pill {
+  display:inline-flex; align-items:center; gap:5px;
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:20px; padding:3px 10px;
+  font-size:12px; color:var(--text-secondary); margin:2px;
+  box-shadow: var(--shadow-sm);
+}
+.col-pill .dot { width:7px; height:7px; border-radius:50%; }
+.dot-num  { background:#4f46e5; }
+.dot-cat  { background:#f59e0b; }
+.dot-date { background:#10b981; }
+
+/* ── Compute card ── */
+.compute-card {
+  background:var(--bg-card); border-radius:14px; padding:18px 20px;
+  box-shadow:var(--shadow-sm); margin-bottom:12px; border:1px solid var(--border);
+}
+
+/* ── Alert cards ── */
+.alert-card { border-radius:14px; padding:16px 20px; margin-bottom:10px; }
+.alert-crit { background:#fff5f5; border:1px solid #fecaca; border-left:4px solid #ef4444; }
+.alert-warn { background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; }
+.alert-info { background:#eff6ff; border:1px solid #bfdbfe; border-left:4px solid #3b82f6; }
+.alert-good { background:#f0fdf4; border:1px solid #bbf7d0; border-left:4px solid #22c55e; }
+
+@media (prefers-color-scheme: dark) {
+  .alert-crit { background:rgba(239,68,68,0.08);  border-color:rgba(239,68,68,0.25); }
+  .alert-warn { background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.25); }
+  .alert-info { background:rgba(59,130,246,0.08); border-color:rgba(59,130,246,0.25); }
+  .alert-good { background:rgba(34,197,94,0.08);  border-color:rgba(34,197,94,0.25); }
+  .tag-warn { background:rgba(254,243,199,0.15); color:#fbbf24; }
+  .tag-info { background:rgba(219,234,254,0.15); color:#60a5fa; }
+  .tag-good { background:rgba(209,250,229,0.15); color:#34d399; }
+  .tag-bad  { background:rgba(254,226,226,0.15); color:#f87171; }
+}
+
+.alert-title { font-weight:700; font-size:14px; margin-bottom:5px; color:var(--text-primary); }
+.alert-body  { font-size:13px; color:var(--text-secondary); line-height:1.6; }
+.alert-rec   { font-size:12px; color:var(--text-muted); margin-top:8px;
+  padding-top:8px; border-top:1px solid var(--border-subtle); }
+.alert-meta  { font-size:10px; color:var(--text-muted); margin-top:4px; }
+.sev-badge   { display:inline-block; padding:2px 9px; border-radius:6px;
+  font-size:10px; font-weight:700; text-transform:uppercase;
+  letter-spacing:0.07em; margin-right:7px; }
+.sev-CRITICAL { background:#fee2e2; color:#dc2626; }
+.sev-WARNING  { background:#fef3c7; color:#d97706; }
+.sev-INFO     { background:#dbeafe; color:#2563eb; }
+.sev-GOOD     { background:#dcfce7; color:#16a34a; }
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+  background: linear-gradient(180deg,#1e1b4b 0%,#1e2050 100%) !important;
+}
+[data-testid="stSidebar"] * { color: rgba(255,255,255,0.7) !important; }
+[data-testid="stSidebar"] h2 { color:#fff !important; font-size:16px !important;
+  font-weight:700 !important; }
+[data-testid="stSidebar"] h3 { color:rgba(255,255,255,0.3) !important;
+  font-size:10px !important; text-transform:uppercase !important;
+  letter-spacing:0.14em !important; font-weight:600 !important; }
+[data-testid="stSidebar"] .stMarkdown p {
+  color:rgba(255,255,255,0.4) !important; font-size:12px !important; }
+section[data-testid="stSidebar"] .stButton>button {
+  background:rgba(255,255,255,0.07) !important;
+  color:rgba(255,255,255,0.75) !important;
+  border:1px solid rgba(255,255,255,0.1) !important;
+  width:100%; border-radius:10px !important; font-size:12px !important;
+  margin-bottom:3px; font-weight:400 !important; }
+section[data-testid="stSidebar"] .stButton>button:hover {
+  background:rgba(255,255,255,0.14) !important; color:#fff !important;
+  border-color:rgba(255,255,255,0.2) !important; }
+
+/* ── Tabs ── */
+.stTabs [data-baseweb="tab-list"] { gap:4px; background:var(--bg-tab-track);
+  border-radius:14px; padding:4px; }
+.stTabs [data-baseweb="tab"] { border-radius:11px !important; font-size:12px !important;
+  font-weight:600 !important; padding:7px 16px !important;
+  color:var(--text-muted) !important; transition:all .15s !important; }
+.stTabs [aria-selected="true"] { background:var(--bg-card) !important;
+  color:var(--accent) !important; box-shadow:var(--shadow-md) !important; }
+
+/* ── Widgets ── */
+div[data-testid="stDataFrame"] { border-radius:14px; overflow:hidden;
+  box-shadow:var(--shadow-sm); }
+[data-testid="metric-container"] { background:var(--bg-card);
+  border:1px solid var(--border); border-radius:14px; padding:16px 18px;
+  box-shadow:var(--shadow-sm); }
+[data-testid="metric-container"] [data-testid="stMetricLabel"] {
+  font-size:11px; color:var(--text-muted) !important;
+  text-transform:uppercase; letter-spacing:0.1em; font-weight:600; }
+[data-testid="metric-container"] [data-testid="stMetricValue"] {
+  color:var(--text-primary) !important; font-weight:700; }
+
+p, li { color:var(--text-secondary); }
+h1, h2, h3 { color:var(--text-primary) !important; }
+.stRadio>label, .stCheckbox>label { color:var(--text-secondary) !important; font-size:13px !important; }
+label { color:var(--text-secondary) !important; font-size:13px !important; }
+
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:10px; }
+::-webkit-scrollbar-thumb:hover { background:var(--text-muted); }
 </style>
 """, unsafe_allow_html=True)
 
-PAL     = ["#1a1a2e","#c9a84c","#4a6fa5","#e07b54","#5a8a6a","#9b6b9b","#e8c97a","#7a9fc0","#d4a5a5","#a5d4c8"]
-PAL_SEQ = [[0,"#f0ede8"],[0.5,"#c9a84c"],[1,"#1a1a2e"]]
-CLUSTER_COLORS = ["#c9a84c","#4a6fa5","#e07b54","#5a8a6a","#9b6b9b"]
+PAL     = ["#4f46e5","#f59e0b","#10b981","#ef4444","#8b5cf6","#06b6d4","#f97316","#ec4899","#84cc16","#14b8a6"]
+PAL_SEQ = [[0,"#eef2ff"],[0.5,"#818cf8"],[1,"#4f46e5"]]
+CLUSTER_COLORS = ["#4f46e5","#f59e0b","#10b981","#ef4444","#8b5cf6"]
 
 def plo(fig, title="", height=380):
-    fig.update_layout(plot_bgcolor="#fafaf8",paper_bgcolor="#fafaf8",font_family="DM Sans",font_color="#333",
-        title=dict(text=title,font_size=14,font_color="#1a1a2e",x=0),
-        margin=dict(t=44 if title else 20,b=20,l=10,r=10),height=height,
-        legend=dict(bgcolor="rgba(0,0,0,0)",borderwidth=0,font_size=12),
-        xaxis=dict(gridcolor="#eeebe5",linecolor="#ddd"),yaxis=dict(gridcolor="#eeebe5",linecolor="#ddd"))
+    # Detect Streamlit theme — fall back to light
+    try:
+        from streamlit.runtime.scriptrunner import get_script_run_ctx
+        is_dark = False  # Streamlit handles its own bg; we fix plot colors
+    except Exception:
+        is_dark = False
+    bg       = "#1a1d2e" if is_dark else "#ffffff"
+    grid     = "rgba(255,255,255,0.05)" if is_dark else "#f1f5f9"
+    axis_col = "rgba(255,255,255,0.08)" if is_dark else "#e2e8f0"
+    tick_col = "#475569" if is_dark else "#94a3b8"
+    title_c  = "#e2e8f0" if is_dark else "#1e293b"
+    fig.update_layout(
+        plot_bgcolor=bg, paper_bgcolor=bg,
+        font_family="Plus Jakarta Sans", font_color=tick_col,
+        title=dict(text=title, font_size=13, font_color=title_c, x=0),
+        margin=dict(t=44 if title else 16, b=16, l=10, r=10),
+        height=height,
+        legend=dict(bgcolor="rgba(0,0,0,0)", borderwidth=0,
+                    font_size=12, font_color=tick_col),
+        xaxis=dict(gridcolor=grid, linecolor=axis_col,
+                   tickfont=dict(size=11, color=tick_col),
+                   title_font=dict(color=tick_col)),
+        yaxis=dict(gridcolor=grid, linecolor=axis_col,
+                   tickfont=dict(size=11, color=tick_col),
+                   title_font=dict(color=tick_col)),
+    )
     return fig
 
 def stat_row(label, val):
@@ -162,13 +383,13 @@ with st.sidebar:
                 st.session_state.active_sheet=name; st.rerun()
 
 if not st.session_state.sheets:
-    st.markdown("""<div class="banner"><div style="width:42px;height:42px;background:linear-gradient(135deg,#c9a84c,#8b5e2a);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#1a1a2e;">✦</div><div><h1>Data Explorer v2</h1><p>Upload any Excel or CSV — no API key needed</p></div></div>""",unsafe_allow_html=True)
+    st.markdown("""<div class="banner"><div style="width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid rgba(255,255,255,0.25);">✦</div><div><h1>Data Explorer</h1><p>Upload any Excel or CSV to get started — no API key needed</p></div></div>""",unsafe_allow_html=True)
     for icon,title,desc in [("🧠","Smart Dashboard","Auto-KPIs, smart chart selection, insights"),("🔬","Quality Audit","Nulls, outliers, skew, normality tests"),("🎨","Chart Studio","20+ chart types: treemap, sankey, radar, 3D scatter, funnel..."),("🔢","Compute","Create columns, bin, rank, normalize, rolling stats"),("🧩","Segment","K-means clustering, PCA, top/bottom N, cohort analysis"),("📈","Relationships","Correlation, scatter matrix, regression, partial corr"),("🕐","Time Series","Trend, seasonality, rolling averages, YoY comparison"),("🔍","Filter & Export","Multi-filter, pivot export, Excel & CSV download")]:
         pass
     cols=st.columns(4)
     items=[("🧠","Smart Dashboard","Auto-KPIs, smart chart selection, insights"),("🎨","Chart Studio","20+ chart types: treemap, radar, funnel, sankey, 3D..."),("🔢","Compute","Create columns, bin, rank, normalize, rolling stats"),("🧩","Segment","K-means, PCA, top/bottom N, cohort analysis")]
     for i,(icon,title,desc) in enumerate(items):
-        with cols[i]: st.markdown(f'<div style="background:#fff;border-radius:12px;padding:18px;border:1px solid #e5e0d8;"><div style="font-size:22px;margin-bottom:8px;">{icon}</div><div style="font-weight:600;font-size:14px;color:#1a1a2e;">{title}</div><div style="font-size:12px;color:#888;margin-top:4px;">{desc}</div></div>',unsafe_allow_html=True)
+        with cols[i]: st.markdown(f'<div style="background:#fff;border-radius:12px;padding:18px;border:1px solid #e2e8f0;"><div style="font-size:22px;margin-bottom:8px;">{icon}</div><div style="font-weight:600;font-size:14px;color:#4f46e5;">{title}</div><div style="font-size:12px;color:#94a3b8;margin-top:4px;">{desc}</div></div>',unsafe_allow_html=True)
     st.stop()
 
 # ── Load & profile ────────────────────────────────────────────────
@@ -192,9 +413,9 @@ date_cols=[c for c in df_raw.columns if pd.api.types.is_datetime64_any_dtype(df_
 
 # ── Banner ────────────────────────────────────────────────────────
 pills="".join([f'<span class="col-pill"><span class="dot dot-num"></span>{c}</span>' for c in num_cols[:4]]+[f'<span class="col-pill"><span class="dot dot-cat"></span>{c}</span>' for c in cat_cols[:3]]+([f'<span class="col-pill"><span class="dot dot-date"></span>{date_cols[0]}</span>'] if date_cols else []))
-if len(df_raw.columns)>7: pills+=f'<span style="font-size:12px;color:#aaa;padding:4px;">+{len(df_raw.columns)-7} more</span>'
-q=P["quality_score"]; qc="#3a8a5a" if q>=90 else "#c9a84c" if q>=70 else "#c0392b"
-st.markdown(f"""<div class="banner"><div style="width:42px;height:42px;background:linear-gradient(135deg,#c9a84c,#8b5e2a);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#1a1a2e;">✦</div><div><h1>{st.session_state.file_name} · {sname}</h1><p>{len(df_raw):,} rows · {len(df_raw.columns)} cols · {len(num_cols)} numeric · {len(cat_cols)} categorical{f" · {len(date_cols)} date" if date_cols else ""}</p></div><div class="badge" style="color:{qc};border-color:{qc}40;background:{qc}18;">Quality {q}%</div></div><div style="margin-bottom:14px;">{pills}</div>""",unsafe_allow_html=True)
+if len(df_raw.columns)>7: pills+=f'<span style="font-size:12px;color:#244060;padding:4px;">+{len(df_raw.columns)-7} more</span>'
+q=P["quality_score"]; qc="#16a34a" if q>=90 else "#d97706" if q>=70 else "#dc2626"
+st.markdown(f"""<div class="banner"><div style="width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid rgba(255,255,255,0.25);">✦</div><div><h1>{st.session_state.file_name} &nbsp;·&nbsp; {sname}</h1><p>{len(df_raw):,} rows &nbsp;·&nbsp; {len(df_raw.columns)} columns &nbsp;·&nbsp; {len(num_cols)} numeric &nbsp;·&nbsp; {len(cat_cols)} categorical{f" &nbsp;·&nbsp; {len(date_cols)} date" if date_cols else ""}</p></div><div class="badge">Quality {q}%</div></div><div style="margin-bottom:16px;">{pills}</div>""",unsafe_allow_html=True)
 
 # ── Tabs ──────────────────────────────────────────────────────────
 tab_names=["🧠 Dashboard","🔬 Quality","📊 Distributions","🎨 Chart Studio","🔢 Compute","🧩 Segment","📈 Relationships","🔍 Filter & Export","🔮 Embeddings","🚨 Smart Alerts"]
@@ -408,7 +629,7 @@ with t_dist:
             if ns.get("norm_p"):
                 col_n="#3a8a5a" if ns["norm_p"]>0.05 else "#c0392b"
                 verdict="Likely normal" if ns["norm_p"]>0.05 else "Not normal"
-                st.markdown(f'<div style="background:#fff;border-radius:8px;padding:10px 16px;border:1px solid #e5e0d8;display:inline-block;font-size:13px;">Shapiro-Wilk p = <b style="color:{col_n};">{ns["norm_p"]}</b> &nbsp;|&nbsp; <b style="color:{col_n};">{verdict}</b> (α=0.05)</div>',unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#fff;border-radius:8px;padding:10px 16px;border:1px solid #e2e8f0;display:inline-block;font-size:13px;">Shapiro-Wilk p = <b style="color:{col_n};">{ns["norm_p"]}</b> &nbsp;|&nbsp; <b style="color:{col_n};">{verdict}</b> (α=0.05)</div>',unsafe_allow_html=True)
     else:
         if not num_cols: st.info("No numeric columns.")
         else:
@@ -996,7 +1217,7 @@ with t_rel:
             cs2=st.columns(min(3,len(pairs[:6])))
             for i,(a,b,r) in enumerate(pairs[:6]):
                 c3=("#3a8a5a" if r>0.5 else "#c0392b" if r<-0.5 else "#c9a84c")
-                with cs2[i%3]: st.markdown(f'<div style="background:#fff;border-radius:8px;padding:10px 14px;border:1px solid #e5e0d8;border-left:3px solid {c3};margin-bottom:6px;"><div style="font-size:12px;color:#888;">{a} × {b}</div><div style="font-size:22px;font-weight:600;color:{c3};">{r:+.2f}</div></div>',unsafe_allow_html=True)
+                with cs2[i%3]: st.markdown(f'<div style="background:#fff;border-radius:8px;padding:10px 14px;border:1px solid #e2e8f0;border-left:3px solid {c3};margin-bottom:6px;"><div style="font-size:12px;color:#94a3b8;">{a} × {b}</div><div style="font-size:22px;font-weight:600;color:{c3};">{r:+.2f}</div></div>',unsafe_allow_html=True)
         elif mode_r=="Scatter explorer":
             c1,c2,c3,c4=st.columns(4)
             xc=c1.selectbox("X",num_cols,key="sc2_x"); yc=c2.selectbox("Y",num_cols,index=min(1,len(num_cols)-1),key="sc2_y")
@@ -1008,8 +1229,8 @@ with t_rel:
                 s2=df_raw[[xc,yc]].dropna()
                 if len(s2)>2:
                     rv,pv=stats.pearsonr(s2[xc],s2[yc]); rc2=("#3a8a5a" if abs(rv)>0.5 else "#c9a84c")
-                    sig_label="<b style='color:#3a8a5a;'>Significant</b>" if pv<0.05 else "<b style='color:#aaa;'>Not significant</b>"
-                    st.markdown(f'<div style="background:#fff;border-radius:8px;padding:10px 16px;border:1px solid #e5e0d8;display:inline-block;font-size:13px;">Pearson r = <b style="color:{rc2};">{rv:.3f}</b> &nbsp;|&nbsp; p-value = <b>{pv:.4f}</b> &nbsp;|&nbsp; {sig_label} (α=0.05)</div>',unsafe_allow_html=True)
+                    sig_label="<b style='color:#3a8a5a;'>Significant</b>" if pv<0.05 else "<b style='color:#244060;'>Not significant</b>"
+                    st.markdown(f'<div style="background:#fff;border-radius:8px;padding:10px 16px;border:1px solid #e2e8f0;display:inline-block;font-size:13px;">Pearson r = <b style="color:{rc2};">{rv:.3f}</b> &nbsp;|&nbsp; p-value = <b>{pv:.4f}</b> &nbsp;|&nbsp; {sig_label} (α=0.05)</div>',unsafe_allow_html=True)
         elif mode_r=="Scatter matrix":
             sm=st.multiselect("Columns",num_cols,default=num_cols[:min(4,len(num_cols))],key="smat_cols"); smcc=st.selectbox("Colour",["None"]+cat_cols,key="smat_col")
             if sm:
@@ -1069,7 +1290,7 @@ with t_rel:
                     f_stat,p_val=stats.f_oneway(*groups)
                     sig="Significant difference" if p_val<0.05 else "No significant difference"
                     col_a="#3a8a5a" if p_val<0.05 else "#aaa"
-                    st.markdown(f'<div style="background:#fff;border-radius:8px;padding:10px 16px;border:1px solid #e5e0d8;display:inline-block;font-size:13px;">One-way ANOVA: F={f_stat:.3f}, p={p_val:.4f} &nbsp;|&nbsp; <b style="color:{col_a};">{sig}</b> (α=0.05)</div>',unsafe_allow_html=True)
+                    st.markdown(f'<div style="background:#fff;border-radius:8px;padding:10px 16px;border:1px solid #e2e8f0;display:inline-block;font-size:13px;">One-way ANOVA: F={f_stat:.3f}, p={p_val:.4f} &nbsp;|&nbsp; <b style="color:{col_a};">{sig}</b> (α=0.05)</div>',unsafe_allow_html=True)
         elif mode_r=="Partial correlation":
             if len(num_cols)<3: st.info("Need at least 3 numeric columns for partial correlation.")
             else:
@@ -1088,7 +1309,7 @@ with t_rel:
                     pr,pp=partial_corr(data,xc2,yc3,ctrl)
                     raw_r,raw_p=stats.pearsonr(data[xc2],data[yc3])
                     cc5=("#3a8a5a" if abs(pr)>0.3 else "#c9a84c")
-                    st.markdown(f"""<div style="background:#fff;border-radius:10px;padding:16px 20px;border:1px solid #e5e0d8;display:inline-block;font-size:14px;line-height:2;">
+                    st.markdown(f"""<div style="background:#fff;border-radius:10px;padding:16px 20px;border:1px solid #e2e8f0;display:inline-block;font-size:14px;line-height:2;">
                     <b>Raw correlation</b> ({xc2} × {yc3}): <b>{raw_r:+.3f}</b> (p={raw_p:.4f})<br>
                     <b>Partial correlation</b> controlling for [{', '.join(ctrl)}]: <b style="color:{cc5};">{pr:+.3f}</b> (p={pp:.4f})
                     </div>""",unsafe_allow_html=True)
@@ -1355,7 +1576,7 @@ with t_emb:
                                     centroid = km.cluster_centers_[c]
                                     dists = np.linalg.norm(embs[idxs] - centroid, axis=1)
                                     top_ex = [texts[idxs[i]][:100] for i in np.argsort(dists)[:3]]
-                                    st.markdown(f'<div class="compute-card"><b style="color:#c9a84c;">Cluster {c}</b> ({len(idxs)} rows)<br><br>'+"<br><br>".join([f'<span style="font-size:12px;color:#555;">• {t}</span>' for t in top_ex])+"</div>", unsafe_allow_html=True)
+                                    st.markdown(f'<div class="compute-card"><b style="color:#c9a84c;">Cluster {c}</b> ({len(idxs)} rows)<br><br>'+"<br><br>".join([f'<span style="font-size:12px;color:#4a6a80;">• {t}</span>' for t in top_ex])+"</div>", unsafe_allow_html=True)
                         except Exception as e:
                             st.error(f"Clustering failed: {e}")
 
@@ -1584,10 +1805,10 @@ with t_alerts:
     .alert-info{background:#f0f8ff;border-color:#3498db;border-left:5px solid #3498db;}
     .alert-good{background:#f0fff4;border-color:#27ae60;border-left:5px solid #27ae60;}
     .alert-title{font-weight:600;font-size:14px;margin-bottom:4px;}
-    .alert-body{font-size:13px;color:#444;line-height:1.55;}
-    .alert-rec{font-size:12px;color:#666;margin-top:6px;padding-top:6px;
+    .alert-body{font-size:13px;color:#6a8a9a;line-height:1.55;}
+    .alert-rec{font-size:12px;color:#3a6080;margin-top:6px;padding-top:6px;
                border-top:1px solid rgba(0,0,0,0.07);font-style:italic;}
-    .alert-meta{font-size:11px;color:#999;margin-top:4px;}
+    .alert-meta{font-size:11px;color:#94a3b8;margin-top:4px;}
     .sev-badge{display:inline-block;padding:2px 8px;border-radius:12px;
                font-size:10px;font-weight:700;text-transform:uppercase;
                letter-spacing:0.06em;margin-right:6px;}
